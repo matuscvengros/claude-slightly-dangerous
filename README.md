@@ -12,7 +12,7 @@ The basic idea is that all operations *within the project directory* are allowed
 ## Install
 
 ```bash
-npx cc-slightly-dangerous install
+npx cc-slightly-dangerous@latest install
 ```
 
 This copies slash commands to `~/.claude/commands/sd/`.
