@@ -1,4 +1,4 @@
-# Claude Code: Slightly Dangerous
+# Claude: Slightly Dangerous
 
 [![Build](https://github.com/matuscvengros/claude-slightly-dangerous/actions/workflows/ci.yml/badge.svg)](https://github.com/matuscvengros/claude-slightly-dangerous/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/claude-slightly-dangerous)](https://www.npmjs.com/package/claude-slightly-dangerous)
