@@ -17,17 +17,17 @@ jobs:
           node-version: 20
 
       - name: Verify package contents
-        run: npm pack --dry-run 2>&1 | tee /dev/stderr | grep -q 'commands/sd/enable.md'
+        run: npm pack --dry-run 2>&1 | tee /dev/stderr | grep -q 'commands/csd/enable.md'
 
       - name: Test install
         run: |
-          ./bin/cc-slightly-dangerous install
-          test -f "$HOME/.claude/commands/sd/enable.md"
-          test -f "$HOME/.claude/commands/sd/enable-with-git.md"
-          test -f "$HOME/.claude/commands/sd/disable.md"
-          diff commands/sd/ "$HOME/.claude/commands/sd/"
+          node bin/cli.js install
+          test -f "$HOME/.claude/commands/csd/enable.md"
+          test -f "$HOME/.claude/commands/csd/enable-with-git.md"
+          test -f "$HOME/.claude/commands/csd/disable.md"
+          diff commands/csd/ "$HOME/.claude/commands/csd/"
 
       - name: Test uninstall
         run: |
-          ./bin/cc-slightly-dangerous uninstall
-          test ! -d "$HOME/.claude/commands/sd"
+          node bin/cli.js uninstall
+          test ! -d "$HOME/.claude/commands/csd"

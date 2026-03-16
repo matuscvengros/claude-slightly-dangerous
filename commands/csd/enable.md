@@ -63,5 +63,5 @@ Step 4: Confirm by printing:
 Slightly Dangerous mode enabled.
 - All local operations auto-approved
 - Write/Edit scoped to: PROJECT_DIR
-- Git operations: DENIED (use /sd:enable-with-git to allow)
+- Git operations: DENIED (use /csd:enable-with-git to allow)
 ```
