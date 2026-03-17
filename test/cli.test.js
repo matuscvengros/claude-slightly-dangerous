@@ -2,14 +2,14 @@ const { describe, it, after, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const os = require("node:os");
+const os = require("os");
 const { execFileSync } = require("node:child_process");
 
 const CLI = path.join(__dirname, "..", "bin", "cli.js");
 const SOURCE_COMMANDS = path.join(__dirname, "..", "commands", "csd");
 const SOURCE_HOOKS = path.join(__dirname, "..", "hooks");
 const GLOBAL_COMMANDS = path.join(os.homedir(), ".claude", "commands", "csd");
-const GLOBAL_HOOKS = path.join(os.homedir(), ".claude", "hooks");
+const GLOBAL_HOOKS = path.join(os.homedir(), ".claude", "hooks", "csd");
 
 function run(args) {
   return execFileSync("node", [CLI, ...args], {
@@ -22,9 +22,8 @@ function cleanup() {
   if (fs.existsSync(GLOBAL_COMMANDS)) {
     fs.rmSync(GLOBAL_COMMANDS, { recursive: true });
   }
-  const hookFile = path.join(GLOBAL_HOOKS, "csd-bash-guard.js");
-  if (fs.existsSync(hookFile)) {
-    fs.rmSync(hookFile);
+  if (fs.existsSync(GLOBAL_HOOKS)) {
+    fs.rmSync(GLOBAL_HOOKS, { recursive: true });
   }
 }
 
@@ -65,7 +64,7 @@ describe("CLI", () => {
       assert.equal(installed, source, `${file} content should match source`);
     }
 
-    // Check hook file
+    // Check hook file in hooks/csd/ subdirectory
     const hookTarget = path.join(GLOBAL_HOOKS, "csd-bash-guard.js");
     assert.ok(fs.existsSync(hookTarget), "hook should exist after install");
     const hookSource = fs.readFileSync(
@@ -85,16 +84,15 @@ describe("CLI", () => {
     assert.ok(fs.existsSync(path.join(GLOBAL_COMMANDS, "enable.md")));
   });
 
-  it("uninstalls command files and hook", () => {
+  it("uninstalls command files and hook directory", () => {
     run(["install"]);
-    const hookTarget = path.join(GLOBAL_HOOKS, "csd-bash-guard.js");
     assert.ok(fs.existsSync(GLOBAL_COMMANDS));
-    assert.ok(fs.existsSync(hookTarget));
+    assert.ok(fs.existsSync(GLOBAL_HOOKS));
 
     const output = run(["uninstall"]);
     assert.match(output, /removed|removing/i);
     assert.ok(!fs.existsSync(GLOBAL_COMMANDS), "commands dir should be removed");
-    assert.ok(!fs.existsSync(hookTarget), "hook should be removed");
+    assert.ok(!fs.existsSync(GLOBAL_HOOKS), "hooks/csd dir should be removed");
     // Should warn about orphaned project settings
     assert.match(output, /csd:disable/i, "should warn about project cleanup");
   });

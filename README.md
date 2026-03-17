@@ -26,7 +26,7 @@ This installs slash commands and the bash guard hook script to `~/.claude/`. Not
 | `/csd:enable` | `~/.claude/commands/csd/` | Slash command — auto-approve local ops, deny git |
 | `/csd:enable-with-git` | `~/.claude/commands/csd/` | Slash command — auto-approve local ops + git |
 | `/csd:disable` | `~/.claude/commands/csd/` | Slash command — reset to default permissions |
-| `csd-bash-guard.js` | `~/.claude/hooks/` | Hook script — inspects bash commands for dangerous patterns |
+| `csd-bash-guard.js` | `~/.claude/hooks/csd/` | Hook script — inspects bash commands for dangerous patterns |
 
 ## Usage
 

@@ -173,7 +173,7 @@ describe("enable.md hook configuration", () => {
   const content = readCommand("enable.md");
 
   it("references the global hook script with quoted path", () => {
-    assert.match(content, /node 'HOME_DIR\/\.claude\/hooks\/csd-bash-guard\.js'/);
+    assert.match(content, /node 'HOME_DIR\/\.claude\/hooks\/csd\/csd-bash-guard\.js'/);
   });
 
   it("configures PreToolUse hook for Bash", () => {

@@ -1,6 +1,6 @@
 {
   "name": "claude-slightly-dangerous",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Claude Code slash commands for quick permission management — auto-approve local ops with safety guardrails",
   "license": "MIT",
   "repository": {

@@ -49,7 +49,7 @@ function install() {
   console.log(BANNER);
 
   const commandsDir = path.join(GLOBAL_BASE, "commands", "csd");
-  const hooksDir = path.join(GLOBAL_BASE, "hooks");
+  const hooksDir = path.join(GLOBAL_BASE, "hooks", "csd");
 
   console.log(`  ${cyan("⇒")} Installing commands to ${dim(displayPath(commandsDir))}`);
   console.log("");
@@ -76,12 +76,12 @@ function uninstall() {
   console.log(BANNER);
 
   const commandsDir = path.join(GLOBAL_BASE, "commands", "csd");
-  const hookFile = path.join(GLOBAL_BASE, "hooks", "csd-bash-guard.js");
+  const hooksDir = path.join(GLOBAL_BASE, "hooks", "csd");
 
   const hasCommands = fs.existsSync(commandsDir);
-  const hasHook = fs.existsSync(hookFile);
+  const hasHooks = fs.existsSync(hooksDir);
 
-  if (!hasCommands && !hasHook) {
+  if (!hasCommands && !hasHooks) {
     console.log(`  ${green("✓")} Nothing to clean up — not installed.`);
     console.log("");
     return;
@@ -98,9 +98,12 @@ function uninstall() {
     fs.rmSync(commandsDir, { recursive: true });
   }
 
-  if (hasHook) {
-    console.log(`    ${red("✗")} hooks/csd-bash-guard.js`);
-    fs.rmSync(hookFile);
+  if (hasHooks) {
+    const files = fs.readdirSync(hooksDir);
+    for (const file of files) {
+      console.log(`    ${red("✗")} hooks/csd/${file}`);
+    }
+    fs.rmSync(hooksDir, { recursive: true });
   }
 
   console.log("");

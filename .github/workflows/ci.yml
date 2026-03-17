@@ -47,7 +47,7 @@ jobs:
           test -f "$HOME/.claude/commands/csd/enable.md"
           test -f "$HOME/.claude/commands/csd/enable-with-git.md"
           test -f "$HOME/.claude/commands/csd/disable.md"
-          test -f "$HOME/.claude/hooks/csd-bash-guard.js"
+          test -f "$HOME/.claude/hooks/csd/csd-bash-guard.js"
           diff commands/csd/ "$HOME/.claude/commands/csd/"
 
       - name: Test idempotent install
@@ -59,7 +59,7 @@ jobs:
         run: |
           node bin/cli.js uninstall
           test ! -d "$HOME/.claude/commands/csd"
-          test ! -f "$HOME/.claude/hooks/csd-bash-guard.js"
+          test ! -f "$HOME/.claude/hooks/csd/csd-bash-guard.js"
 
       - name: Test uninstall when nothing installed
         run: |
@@ -71,7 +71,7 @@ jobs:
           TARBALL=$(ls claude-slightly-dangerous-*.tgz)
           npx --yes "./$TARBALL" install
           test -f "$HOME/.claude/commands/csd/enable.md"
-          test -f "$HOME/.claude/hooks/csd-bash-guard.js"
+          test -f "$HOME/.claude/hooks/csd/csd-bash-guard.js"
           npx --yes "./$TARBALL" uninstall
           test ! -d "$HOME/.claude/commands/csd"
 

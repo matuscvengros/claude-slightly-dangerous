@@ -102,7 +102,7 @@ Append this entry to `hooks.PreToolUse`:
   "hooks": [
     {
       "type": "command",
-      "command": "node 'HOME_DIR/.claude/hooks/csd-bash-guard.js'"
+      "command": "node 'HOME_DIR/.claude/hooks/csd/csd-bash-guard.js'"
     }
   ]
 }
