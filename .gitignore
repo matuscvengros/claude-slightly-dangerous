@@ -1,5 +1,6 @@
 # User
 .claude
+CLAUDE.md
 
 node_modules/
 *.tgz

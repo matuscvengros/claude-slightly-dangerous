@@ -1,15 +1,18 @@
 {
   "name": "claude-slightly-dangerous",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Claude Code slash commands for quick permission management — auto-approve local ops with safety guardrails",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/matuscvengros/claude-slightly-dangerous"
   },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
   "keywords": ["claude", "claude-code", "permissions", "cli"],
   "bin": {
     "claude-slightly-dangerous": "./bin/cli.js"
   },
-  "files": ["commands/", "bin/"]
+  "files": ["commands/", "hooks/", "bin/"]
 }

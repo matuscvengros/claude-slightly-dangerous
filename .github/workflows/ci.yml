@@ -1,4 +1,4 @@
-name: Build
+name: CI
 
 on:
   push:
@@ -7,8 +7,24 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Unit tests
+        run: npm test
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: test
     steps:
       - uses: actions/checkout@v4
 
@@ -17,17 +33,52 @@ jobs:
           node-version: 20
 
       - name: Verify package contents
-        run: npm pack --dry-run 2>&1 | tee /dev/stderr | grep -q 'commands/csd/enable.md'
+        run: |
+          npm pack --dry-run 2>&1 | tee pack-output.txt
+          grep -q 'commands/csd/enable.md' pack-output.txt
+          grep -q 'commands/csd/enable-with-git.md' pack-output.txt
+          grep -q 'commands/csd/disable.md' pack-output.txt
+          grep -q 'hooks/csd-bash-guard.js' pack-output.txt
+          grep -q 'bin/cli.js' pack-output.txt
 
-      - name: Test install
+      - name: Test install (non-interactive defaults to global)
         run: |
           node bin/cli.js install
           test -f "$HOME/.claude/commands/csd/enable.md"
           test -f "$HOME/.claude/commands/csd/enable-with-git.md"
           test -f "$HOME/.claude/commands/csd/disable.md"
+          test -f "$HOME/.claude/hooks/csd-bash-guard.js"
+          diff commands/csd/ "$HOME/.claude/commands/csd/"
+
+      - name: Test idempotent install
+        run: |
+          node bin/cli.js install
           diff commands/csd/ "$HOME/.claude/commands/csd/"
 
       - name: Test uninstall
         run: |
           node bin/cli.js uninstall
           test ! -d "$HOME/.claude/commands/csd"
+          test ! -f "$HOME/.claude/hooks/csd-bash-guard.js"
+
+      - name: Test uninstall when nothing installed
+        run: |
+          node bin/cli.js uninstall 2>&1 | grep -qi "nothing"
+
+      - name: Test simulated npx install
+        run: |
+          npm pack
+          TARBALL=$(ls claude-slightly-dangerous-*.tgz)
+          npx --yes "./$TARBALL" install
+          test -f "$HOME/.claude/commands/csd/enable.md"
+          test -f "$HOME/.claude/hooks/csd-bash-guard.js"
+          npx --yes "./$TARBALL" uninstall
+          test ! -d "$HOME/.claude/commands/csd"
+
+      - name: Test bash guard hook blocks dangerous commands
+        run: |
+          echo '{"tool_input":{"command":"sudo rm -rf /"}}' | node hooks/csd-bash-guard.js && exit 1 || true
+          echo '{"tool_input":{"command":"cat .env"}}' | node hooks/csd-bash-guard.js && exit 1 || true
+          echo '{"tool_input":{"command":"echo hello | sudo tee /etc/hosts"}}' | node hooks/csd-bash-guard.js && exit 1 || true
+          echo '{"tool_input":{"command":"ls -la"}}' | node hooks/csd-bash-guard.js
+          echo '{"tool_input":{"command":"npm test"}}' | node hooks/csd-bash-guard.js
